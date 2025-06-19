@@ -256,7 +256,9 @@ ERRBACK takes one argument, the resulting buffer."
 (defcustom ein:notebooklist-date-format "%F"
   "The format spec for date in notebooklist mode.
 See `ein:format-time-string'."
-  :type '(or string function)
+  :type '(choice
+          (string :tag "Format String")
+          (function :tag "Format Function"))
   :group 'ein)
 
 (defun ein:notebooklist-open--finish (url-or-port callback content)

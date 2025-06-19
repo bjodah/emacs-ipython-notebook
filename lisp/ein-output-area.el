@@ -1,4 +1,4 @@
-;;; ein-output-area.el --- Output area module
+;;; ein-output-area.el --- Output area module -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2012 Takafumi Arakaki
 
@@ -116,7 +116,7 @@ when REPLACE-P returns non-`nil'."
 
 (defun ein:shr-insert-document (dom)
   "`shr-insert-document' with EIN setting."
-  (eval `(let ,ein:shr-env (shr-insert-document dom))))
+  (eval `(let ,ein:shr-env (shr-insert-document ,dom))))
 
 (defun ein:insert-html-shr (html-string)
   "Render HTML-STRING using `shr-insert-document'.

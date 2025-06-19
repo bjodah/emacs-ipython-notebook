@@ -35,13 +35,11 @@
 
 ;;; Code:
 (require 'ob)
+(require 'org-element)
 (require 'ein-utils)
 (require 'ein-cell)
 (require 'anaphora)
 
-(autoload 'org-element-property "org-element")
-(autoload 'org-element-context "org-element")
-(autoload 'org-element-type "org-element")
 (autoload 'org-id-new "org-id")
 (autoload 'org-redisplay-inline-images "org" nil t)
 (autoload 'ein:notebooklist-new-notebook-with-name "ein-notebooklist")
