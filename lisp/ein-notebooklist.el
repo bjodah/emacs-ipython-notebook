@@ -343,7 +343,7 @@ See `ein:format-time-string'."
     (if retry
         (ein:log 'error notice)
       (ein:log 'info notice)
-      (sleep-for 0 1500)
+      (sleep-for 1.5)
       (ein:notebooklist-new-notebook url-or-port kernelspec callback no-pop t explicit-path))))
 
 ;;;###autoload

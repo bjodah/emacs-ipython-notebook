@@ -337,7 +337,7 @@ server command."
                                            "--port-retries" "0")))))
     (cl-loop repeat 30
              until (ein:jupyter-server-ready-p)
-             do (sleep-for 0 500)
+             do (sleep-for 0.5)
              finally do
              (if-let ((buffer (get-buffer *ein:jupyter-server-buffer-name*))
                       (url-or-port (ein:jupyter-my-url-or-port)))
@@ -399,7 +399,7 @@ server command."
                                            (cl-search "request curl"
                                                       (process-name proc)))
                                          (process-list)))
-                   do (sleep-for 0 500))
+                   do (sleep-for 0.5))
           (cond (my-p
                  (-when-let* ((proc (ein:jupyter-server-process))
                               (pid (process-id proc)))

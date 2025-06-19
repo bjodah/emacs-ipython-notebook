@@ -353,7 +353,7 @@ notebook buffer then the user will be prompted to select an opened notebook."
                                 (list notebook))
     (cl-loop repeat 10
           until (null (ein:$kernel-websocket (ein:$notebook-kernel notebook)))
-          do (sleep-for 0 500)
+          do (sleep-for 0.5)
           finally return (ein:notebook-open (ein:$notebook-url-or-port notebook)
                                             (ein:$notebook-notebook-path notebook)))))
 

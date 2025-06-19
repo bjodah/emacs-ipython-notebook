@@ -608,7 +608,7 @@ DONEBACK returns t or \\='error when calling process is done, and nil if not don
               (lambda ()
                 (aif (funcall doneback) it
                   (message "%s%s" mesg (make-string (1+ (% (cl-incf count) 3)) ?.))
-                  (sleep-for 0 365)))))))
+                  (sleep-for 0.365)))))))
       (deferred:nextc it
         (lambda (status)
           (message "%s... %s" mesg

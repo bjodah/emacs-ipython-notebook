@@ -229,9 +229,9 @@ e.g., ob-c++ is not ob-C.el."
     (ob-ein--initiate-session session kernelspec callback)
     (if (ein:eval-if-bound 'org-current-export-file)
         (save-excursion
-          (cl-loop with interval = 2000
+          (cl-loop with interval_sec = 2.0
                 with pending = t
-                repeat (/ (* ob-ein-timeout-seconds 1000) interval)
+                repeat (/ ob-ein-timeout-seconds interval_sec)
                 do (progn
                      (org-babel-goto-named-result name)
                      (forward-line 1)
@@ -239,7 +239,7 @@ e.g., ob-c++ is not ob-C.el."
                                     (regexp-quote *ob-ein-sentinel*)
                                     (org-babel-result-end) t)))
                 until (not pending)
-                do (sleep-for 0 interval)
+                do (sleep-for interval_sec)
                 finally return
                 (if pending
                     (prog1 ""
@@ -363,7 +363,7 @@ Install CALLBACK (i.e., cell execution) upon notebook retrieval."
                             (cl-loop repeat 50
                                   for live-p = (ein:kernel-live-p (ein:$notebook-kernel nb))
                                   until live-p
-                                  do (sleep-for 0 300)
+                                  do (sleep-for 0.3)
                                   finally
                                   do (if (not live-p)
                                          (ein:log 'error
@@ -393,7 +393,7 @@ Install CALLBACK (i.e., cell execution) upon notebook retrieval."
                     with fullpath = (concat (file-name-as-directory nbpath) path)
                     for extant = (file-exists-p fullpath)
                     until (not extant)
-                    do (sleep-for 0 500)
+                    do (sleep-for 0.5)
                     finally do (if extant
                                    (ein:display-warning
                                     (format "cannot delete path=%s nbpath=%s"
