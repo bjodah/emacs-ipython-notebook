@@ -474,7 +474,7 @@ This is equivalent to do ``C-c`` in the console program."
   (let* ((cells (plist-get data :cells))
          (ws-cells (mapcar (lambda (data) (ein:cell-from-json data)) cells))
          (worksheet (ein:notebook--worksheet-new notebook)))
-    (setf (oref worksheet :saved-cells) ws-cells)
+    (setf (oref worksheet saved-cells) ws-cells)
     ;(mapcar (lambda (data) (message "test %s" (slot-value data 'metadata))) ws-cells)
     (list worksheet)))
 
@@ -852,6 +852,7 @@ compilation issue."
   (ein:notebook--define-key map "\C-x\C-w" ein:notebook-rename-command)
   (define-key map "\M-."          'ein:pytools-jump-to-source-command)
   (define-key map "\M-,"          'ein:pytools-jump-back-command)
+  (ein:notebook--define-key map "\C-c\C-i" ein:completer-complete)
   (ein:notebook--define-key map (kbd "C-c C-/") ein:notebook-scratchsheet-open)
   (easy-menu-define ein:notebook-menu map "EIN Notebook Mode Menu"
     `("EIN Notebook"
@@ -938,8 +939,9 @@ compilation issue."
 
   ;; BODY contains code to execute each time the mode is enabled or disabled.
   ;; It is executed after toggling the mode, and before running MODE-hook.
-
-  )
+  (if ein:notebook-mode
+      (add-hook 'completion-at-point-functions #'ein:completion-at-point nil t)
+    (remove-hook 'completion-at-point-functions #'ein:completion-at-point t)))
 
 (defun ein:notebook-fetch-data (notebook callback &optional cbargs)
   "Fetch data in body tag of NOTEBOOK html page.

@@ -80,9 +80,14 @@ The proper fix is to sempahore between competing curl processes.")
          (xsrf (or (cdr (assoc-string "_xsrf" cookies))
                    (gethash host ein:query-xsrf-cache)))
          (key (ein:query-divine-authorization-tokens-key url))
-         (token (aand key
-                      (gethash key ein:query-authorization-tokens)
-                      (cons "Authorization" (format "token %s" it)))))
+         (parsed-port (url-port (url-generic-parse-url url)))
+         (token-val (or (and key (gethash key ein:query-authorization-tokens))
+                        (gethash host ein:query-authorization-tokens)
+                        (and parsed-port
+                             (gethash (format "%s:%s" host parsed-port) ein:query-authorization-tokens))
+                        (gethash (ein:url url) ein:query-authorization-tokens)))
+         (token (when token-val
+                  (cons "Authorization" (format "token %s" token-val)))))
     (setq settings (plist-put settings :headers
                               (append (plist-get settings :headers)
                                       (list (cons "User-Agent" "Mozilla/5.0")))))

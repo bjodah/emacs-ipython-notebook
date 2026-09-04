@@ -717,6 +717,15 @@ ein:notebooklist-open*."
            (line (mapconcat #'identity (list domain "FALSE" (car (url-path-and-query parsed-url)) (if securep "TRUE" "FALSE") "0" cookie-name (concat cookie-content "\n")) "\t")))
       (write-region line nil (request--curl-cookie-jar) 'append)))
   (let ((token (or token (ein:notebooklist-token-or-password url-or-port))))
+    (when (and (stringp token) (not (string= token "")))
+      (let* ((parsed (url-generic-parse-url (file-name-as-directory (ein:url url-or-port))))
+             (host (url-host parsed))
+             (port (url-port parsed)))
+        (when host
+          (setf (gethash host ein:query-authorization-tokens) token)
+          (setf (gethash (ein:url url-or-port) ein:query-authorization-tokens) token)
+          (when port
+            (setf (gethash (format "%s:%s" host port) ein:query-authorization-tokens) token)))))
     (cond ((null token) ;; don't know
            (ein:notebooklist-login--iteration url-or-port callback nil nil -1 nil))
           ((string= token "") ;; all authentication disabled

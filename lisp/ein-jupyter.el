@@ -231,7 +231,16 @@ generate a call to `ein:notebooklist-login' and once
 authenticated open the notebooklist buffer via a call to
 `ein:notebooklist-open'."
   (if-let ((token (ein:notebooklist-token-or-password url-or-port)))
-      (ein:notebooklist-login url-or-port callback nil nil token)
+      (progn
+        (let* ((parsed (url-generic-parse-url (file-name-as-directory (ein:url url-or-port))))
+               (host (url-host parsed))
+               (port (url-port parsed)))
+          (when host
+            (setf (gethash host ein:query-authorization-tokens) token)
+            (setf (gethash (ein:url url-or-port) ein:query-authorization-tokens) token)
+            (when port
+              (setf (gethash (format "%s:%s" host port) ein:query-authorization-tokens) token))))
+        (ein:notebooklist-login url-or-port callback nil nil token))
     (ein:log 'error "`(ein:notebooklist-token-or-password %s)` must return non-nil"
 	     url-or-port)))
 

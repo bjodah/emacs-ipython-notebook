@@ -385,6 +385,29 @@ expectation of a kernel response."
             (ein:$kernel-after-execute-hook kernel)))
     msg-id))
 
+(defun ein:kernel-complete (kernel code cursor-pos callbacks &optional errback)
+  "Complete code at CURSOR-POS in string CODE on KERNEL.
+
+When calling this method pass a CALLBACKS structure of the form:
+
+    (:complete_reply (FUNCTION . ARGUMENT))
+
+Call signature::
+
+  (funcall FUNCTION ARGUMENT CONTENT METADATA)
+
+CONTENT and METADATA are given by `complete_reply' message."
+  (condition-case err
+      (let* ((content (list :code code :cursor_pos cursor-pos))
+             (msg (ein:kernel--get-msg kernel "complete_request" content))
+             (msg-id (plist-get (plist-get msg :header) :msg_id)))
+        (cl-assert (ein:kernel-live-p kernel) nil "ein:kernel-complete: kernel not live")
+        (ein:websocket-send-shell-channel kernel msg)
+        (ein:kernel-set-callbacks-for-msg kernel msg-id callbacks)
+        msg-id)
+    (error (if errback (funcall errback (error-message-string err))
+             (ein:log 'error "ein:kernel-complete: %s" (error-message-string err))))))
+
 (defun ein:kernel-connect-request (kernel callbacks)
   "Request basic information for a KERNEL.
 

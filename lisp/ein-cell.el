@@ -298,7 +298,7 @@ WARNING: OBJ and SLOT are evaluated multiple times,
 (cl-defmethod ein:cell-convert ((cell ein:codecell) _type)
   (let ((new (cl-call-next-method)))
     (when (and (cl-typep new 'ein:codecell)
-               (slot-boundp cell :kernel))
+               (slot-boundp cell 'kernel))
       (setf (slot-value new 'kernel) (slot-value cell 'kernel)))
     new))
 

@@ -32,6 +32,7 @@
 
 (declare-function ein:get-notebook "ein-notebook")
 (declare-function ein:notebook-mode "ein-notebook")
+(declare-function ein:completion-at-point "ein-completer")
 
 (declare-function polymode-inhibit-during-initialization "polymode-core")
 
@@ -378,6 +379,7 @@ But `C-x b` seems to consult `buffer-list' and not the C (window)->prev_buffers.
         (buffer-local-value 'after-change-functions (pm-base-buffer)))
   (setq-local font-lock-dont-widen t)
   (setq-local syntax-propertize-chunks 0) ;; internal--syntax-propertize too far
+  (add-hook 'completion-at-point-functions #'ein:completion-at-point nil t)
   (add-hook 'buffer-list-update-hook #'poly-ein--record-window-buffer nil t)
   (add-hook 'ido-make-buffer-list-hook
 	    (lambda ()
@@ -468,8 +470,8 @@ But `C-x b` seems to consult `buffer-list' and not the C (window)->prev_buffers.
            nil
            (assq-delete-all src-buf (window-prev-buffers nil)))
           (run-hook-with-args 'polymode-switch-buffer-hook src-buf dest-buf)
-          (pm--run-hooks pm/polymode :switch-buffer-functions src-buf dest-buf)
-          (pm--run-hooks pm/chunkmode :switch-buffer-functions src-buf dest-buf))))))
+          (pm--run-hooks pm/polymode 'switch-buffer-functions src-buf dest-buf)
+          (pm--run-hooks pm/chunkmode 'switch-buffer-functions src-buf dest-buf))))))
 
 (defsubst poly-ein--span-start-end (args)
   (if (or pm-initialization-in-progress (not poly-ein-mode))
