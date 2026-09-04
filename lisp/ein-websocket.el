@@ -28,6 +28,7 @@
 (require 'websocket)
 (require 'ein-core)
 (require 'ein-classes)
+(require 'ein-log)
 (require 'url-cookie)
 (require 'request)
 
